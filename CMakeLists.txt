@@ -8,6 +8,7 @@ endif()
 
 project(TDLib VERSION 1.8.12 LANGUAGES CXX C)
 
+
 if (NOT DEFINED CMAKE_MODULE_PATH)
   set(CMAKE_MODULE_PATH "")
 endif()
