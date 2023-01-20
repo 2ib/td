@@ -6,7 +6,8 @@ if (POLICY CMP0065)
   cmake_policy(SET CMP0065 NEW)
 endif()
 
-project(TDLib VERSION 1.8.12 LANGUAGES CXX C)
+project(TDLib VERSION 1.8.14 LANGUAGES CXX C)
+
 
 
 
