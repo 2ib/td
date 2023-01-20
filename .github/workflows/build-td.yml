@@ -28,15 +28,17 @@ jobs:
             git clone https://github.com/${{ github.repository }}
             cd td/
 
-            for SHA in $(git rev-list ${{ github.event.before }}...${GITHUB_REF_NAME}); do
-                version=$(git --no-pager log ${SHA} --pretty=format:'%s' -n 1 | sed -nr 's/\Update version to ([0-9\.]+)\./\1/p')
+            GIT_DIFF=$(git --no-pager diff --unified=0 ${{ github.event.before }} CMakeLists.txt)
 
-                if [ ! -z "${version}" ]; then
-                    echo "run_jobs=true" >> $GITHUB_OUTPUT
-                    break
-                fi
-            done
-          fi
+            SED_REGEX="project\(TDLib VERSION ([0-9\.]+) LANGUAGES CXX C\)"
+
+            OLD_TDLIB_VERSION=$(echo "${GIT_DIFF}" | sed -nr "s/\-$SED_REGEX/\1/p")
+            NEW_TDLIB_VERSION=$(echo "${GIT_DIFF}" | sed -nr "s/\+$SED_REGEX/\1/p")
+
+            if [ ! -z "${OLD_TDLIB_VERSION}" ] && [ ! -z "${NEW_TDLIB_VERSION}" ] && 
+               [ "${OLD_TDLIB_VERSION}" != "${NEW_TDLIB_VERSION}" ]; then
+              echo "run_jobs=true" >> $GITHUB_OUTPUT
+            fi
 
   Ubuntu-build:
     needs: Check
